@@ -1,5 +1,3 @@
-SET GLOBAL FOREIGN_KEY_CHECKS = 0;
-
 drop database if exists car_table;
 
 create database car_table;
@@ -10,13 +8,12 @@ create table veiculos (
 VEICULO_ID integer,
 VEICULO_NOME varchar(50) not null,
 MONTADORA_ID integer,
-primary key(MONTADORA_ID,VEICULO_ID)
+primary key(VEICULO_ID)
 );
 
 create table montadoras (
 MONTADORA_ID integer primary key,
-MONTADORA_NOME varchar(50),
-constraint fk_cc foreign key (MONTADORA_ID) references veiculos (MONTADORA_ID)
+MONTADORA_NOME varchar(50)
 );
 
 insert into montadoras values(99,"VW");
@@ -39,8 +36,5 @@ insert into veiculos values(515,"sorento",90);
 
 select * from montadoras;
 
--- insert into veiculos values(515,"sorento",90,now()); 
+-- select * from veiculos;
 
--- select * from montadoras;
-
--- deu certo :) im so happy 
