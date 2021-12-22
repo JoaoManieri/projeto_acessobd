@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Funções utilizadas 
-
-# ### Bibliotecas utilizadas
-
 # In[1]:
 
 
@@ -12,14 +8,9 @@ import mysql.connector
 import requests
 import pandas as pd
 from tkinter import *
-#import pdfkit as pdf
 import os
 import webbrowser
 
-
-# # add_montadora()
-# 
-# Esta é a função responsavel por adicionar uma nova montadora ao banco de dados. As variaveis de entrada `query_INPUT_MONTADORA_ID` e `query_INPUT_MONTADORA_NOME` são carregadas respectivamente com com o ID e nome fornecidos pelo usuario
 
 # In[2]:
 
@@ -55,11 +46,7 @@ def add_montadora():
         warning.mainloop() 
 
 
-# # rmv_todos_veiculos_montadora()
-# 
-# Esta é a função responsavel por todos os veiculos associadoa a determinada montadora
-
-# In[36]:
+# In[3]:
 
 
 def rmv_todos_veiculos_montadora():
@@ -91,10 +78,6 @@ def rmv_todos_veiculos_montadora():
     end.mainloop()
 
 
-# # confirma_rmv_veiculos()
-# 
-# Cria tela de confirmação de exclusao de montadora e exclusão de todos os veiculos associadoa a montadora
-
 # In[4]:
 
 
@@ -114,10 +97,6 @@ def confirma_rmv_veiculos():
     warning_rmv.mainloop() 
     
 
-
-# # rmv_montadora()
-# 
-# Esta é a função responsavel por remover uma montadora ao banco de dados e remover todos os veiculos que estravam associadoa a esta montadora
 
 # In[5]:
 
@@ -141,10 +120,6 @@ def rmv_montadora():
         warning.mainloop() 
         
 
-
-# # add_veiculo()
-# 
-# Esta é a função responsavel por adicionar um novo veiculo ao banco de dados. 
 
 # In[6]:
 
@@ -192,10 +167,6 @@ def add_veiculo():
         
 
 
-# # rmv_veiculo()
-# 
-# Esta é a função responsavel por remover um veiculo ao banco de dados. 
-
 # In[7]:
 
 
@@ -227,10 +198,6 @@ def rmv_veiculo():
         
 
 
-# # gera_relatorio()
-# 
-# Esta é a função responsavel gerar um relatorio que contenha uma tabela com todos os veiculos e suas respectivas montadoras
-
 # In[8]:
 
 
@@ -241,12 +208,6 @@ def gera_relatorio():
     #pdf.from_url('RELATORIO.html', 'Relatorio.pdf')
     webbrowser.open('RELATORIO.html', new= 2)
 
-
-# # verifica_id()
-# 
-# Esta é a função responsavel verificar a hexistencia ou nao de um ID:
-#     - ID existe `return 0`
-#     - ID nao existe `return 1`
 
 # In[9]:
 
@@ -261,12 +222,6 @@ def verifica_id(ID,coluna,tabela):
     return 1
 
 
-# # verifica_nome()
-# 
-# Esta é a função responsavel verificar a hexistencia ou nao de um nome:
-#     - ID existe `return 0`
-#     - ID nao existe `return 1`
-
 # In[10]:
 
 
@@ -279,25 +234,62 @@ def verifica_nome(NOME,coluna,tabela):
     return 1
 
 
-# # CONECTOR COM BANCO DE DADOS
+# In[22]:
 
-# O banco de dados conetado, se gerado com o script, deve se chamar `car_table`, apos isso inserir os dados referentes a `user` e `password`
+
+
+
 
 # In[11]:
 
 
-con_ = mysql.connector.connect(host='localhost',database='car_table',user='root',password='MANIeri281298')
-if con_.is_connected():
-    cursor = con_.cursor()
-    print('conectado')
+def conector():
+    INPUT_USER = USER_ID.get()
+    INPUT_PASSWORD = PASSWORD_ID.get()
+
+    USER_IDf = str(INPUT_USER)
+    PASSWORD_IDf = str(INPUT_PASSWORD)
+    global con_
+    global cursor
+    con_ = mysql.connector.connect(host='localhost',database='car_table',user= USER_IDf,password= PASSWORD_IDf)
+    
+    if con_.is_connected():
+        cursor = con_.cursor()
+        grid_30["text"] = "conectado"
+        print('conectado')
+    else:
+        print('desconectado')
+        grid_30["text"] = "desconectado"
+    login.destroy()
 
 
-# # Janela principal
+# In[13]:
 
-# Todos os eventos do app
 
-# In[37]:
+login = Tk()
 
+login.title("login")
+
+#grid_00 = Label(login, text = "Insira as informações de login e senha para acessar o banco de dados")
+#grid_00.grid(column=0,row=0, padx=10, pady=10)
+
+grid_10 = Label(login, text = "user")
+grid_10.grid(column=0,row=1, padx=10, pady=10)
+
+grid_11 = Label(login, text = "password")
+grid_11.grid(column=1,row=1, padx=10, pady=10)
+
+USER_ID = Entry(login, bd = 5)
+USER_ID.grid(column=0,row=2, padx=10, pady=10)
+
+PASSWORD_ID = Entry(login, bd = 5)
+PASSWORD_ID.grid(column=1,row=2, padx=10, pady=10)
+
+BTN_CANCEL = Button(login,text = "Cancelar", command = login.destroy)
+BTN_CANCEL.grid(column=0,row=3,padx=10, pady=10)
+
+BTN_LOGIN = Button(login,text = "Entrar", command = conector)
+BTN_LOGIN.grid(column=1,row=3,padx=10, pady=10)
 
 janela = Tk()
 
@@ -314,13 +306,8 @@ grid_10.grid(column=1,row=0, padx=10, pady=10)
 grid_20 = Label(janela, text = "status BD:")
 grid_20.grid(column=2,row=0, padx=10, pady=10)
 
-grid_30 = Label(janela, text = "")
+grid_30 = Label(janela, text = "",bg="green")
 grid_30.grid(column=3,row=0, padx=10, pady=10)
-
-if con_.is_connected():
-    grid_30["text"] = "conectado"
-else:
-    grid_30["text"] = "desconectado"
 
 
 #montadora
@@ -385,4 +372,16 @@ BTN_RELATORIO = Button(janela,text = "Gerar Relatorio", command = gera_relatorio
 BTN_RELATORIO.grid(column=0,row=8,padx=10, pady=10)
 
 janela.mainloop() #permite que a janela fique em loop na tela
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
