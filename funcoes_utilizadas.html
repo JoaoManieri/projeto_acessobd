@@ -14276,7 +14276,6 @@ a.anchor-link {
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="c1">#import pdfkit as pdf</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
 </pre></div>
@@ -14300,19 +14299,38 @@ a.anchor-link {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">add_montadora</span><span class="p">():</span>
     
-    <span class="n">query_INPUT_MONTADORA_ID</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-    <span class="n">query_INPUT_MONTADORA_NOME</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_NOME</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="s2">&quot;Esta é a função responsavel por adicionar uma nova montadora ao banco de dados. As variaveis de entrada query_INPUT_MONTADORA_ID e query_INPUT_MONTADORA_NOME são carregadas respectivamente com com o ID e nome fornecidos pelo usuario&quot;</span>
+                                                                    
+    <span class="c1">#obtem os valores inseridos pelo usuario na tela principal      # A função get() serve para </span>
+    <span class="n">query_INPUT_MONTADORA_ID</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>             <span class="c1"># &quot;pegar&quot; o valor, sem ela</span>
+    <span class="n">query_INPUT_MONTADORA_NOME</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_NOME</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>         <span class="c1"># a saida seria o argumento </span>
+                                                                    <span class="c1"># da função.</span>
+        
+    <span class="c1"># invica duas funções de checahem de dados, e armazena seu retorno</span>
     
+    <span class="c1">#    O intuito desta funcao e justamente verificar a ja existencia desta montadora </span>
+    <span class="c1"># seja pelo nome ou pelo ID, assim, como se deseja INCLUIR uma nova montadora, a </span>
+    <span class="c1"># verificação retorna os seguintes valores:</span>
+    
+    <span class="c1"># - Se valor checado já existir, retorna 0</span>
+    <span class="c1"># - Se valor checado não existir, retorna 1</span>
+    
+    <span class="c1"># Ou seja, é nessesario que o valor inserido não exista para que uma nova montadora seja inserida no banco de dados.</span>
+
     <span class="n">check1</span> <span class="o">=</span> <span class="n">verifica_id</span><span class="p">(</span><span class="n">query_INPUT_MONTADORA_ID</span><span class="p">,</span><span class="s1">&#39;MONTADORA_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;montadoras&#39;</span><span class="p">)</span>
 
     <span class="n">check2</span> <span class="o">=</span> <span class="n">verifica_nome</span><span class="p">(</span><span class="n">query_INPUT_MONTADORA_NOME</span><span class="p">,</span><span class="s1">&#39;MONTADORA_NOME&#39;</span><span class="p">,</span><span class="s1">&#39;montadoras&#39;</span><span class="p">)</span>
 
+    <span class="c1"># condicional, se verifica_id(...) e verifica_nome (...) retorna 1</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">check1</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">check2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        
+        <span class="c1"># realiza uma &quot;query no bd, permitindo que seja incluso com as variaveis disponibilizadas pelo usuario&quot;</span>
         <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;insert into montadoras values(&quot;</span> <span class="o">+</span> <span class="n">query_INPUT_MONTADORA_ID</span> <span class="o">+</span><span class="s2">&quot;&quot;&quot;,&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="n">query_INPUT_MONTADORA_NOME</span><span class="o">+</span><span class="s2">&quot;&#39;);&quot;</span>
 
         <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="n">con_</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         
+        <span class="c1"># cria janela de confirmação de ação no bd</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
         
         <span class="n">mensagem</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="n">end</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Montadora incluida com sucesso!!!&quot;</span><span class="p">)</span>
@@ -14320,6 +14338,7 @@ a.anchor-link {
         
         <span class="n">end</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span> 
         
+    <span class="c1"># condicional, se verifica_id(...) ou e verifica_nome (...) retorna 0    </span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warning</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
         
@@ -14337,17 +14356,65 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="rmv_todos_veiculos_montadora()">rmv_todos_veiculos_montadora()<a class="anchor-link" href="#rmv_todos_veiculos_montadora()">&#182;</a></h1><p>Esta é a função responsavel por todos os veiculos associadoa a determinada montadora</p>
+<h3 id="Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">Nao tenha duvidas sobre esta fun&#231;&#227;o!<a class="anchor-link" href="#Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">&#182;</a></h3><p>utilize o comando <code>print(add_montadora.__doc__)</code> durante a execução do codigo e veja o que esta função faz!</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">add_montadora</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Esta é a função responsavel por adicionar uma nova montadora ao banco de dados. As variaveis de entrada query_INPUT_MONTADORA_ID e query_INPUT_MONTADORA_NOME são carregadas respectivamente com com o ID e nome fornecidos pelo usuario
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="rmv_todos_veiculos_montadora()">rmv_todos_veiculos_montadora()<a class="anchor-link" href="#rmv_todos_veiculos_montadora()">&#182;</a></h1><p>Esta é a função responsavel por todos os veiculos associadoa a determinada montadora, a varivel de entrada <code>query_INPUT_MONTADORA_ID</code> é carregada a partir dos dados inseridos pelo usuario</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">rmv_todos_veiculos_montadora</span><span class="p">():</span>
     
+    <span class="s2">&quot;Esta é a função responsavel por todos os veiculos associadoa a determinada montadora, a varivel de entrada query_INPUT_MONTADORA_ID é carregada a partir dos dados inseridos pelo usuario&quot;</span>
+    
+    <span class="c1">#     Esta fução so sera invocada quando necessario apagar uma montadora, assim segundo</span>
+    <span class="c1"># o documento de requisitos de software, quando a montadfora for apagada, serão apagados</span>
+    <span class="c1"># também todos os veiculos vinculados a ela.</span>
+    
+    <span class="c1">#obtem os valores inseridos pelo usuario na tela principal</span>
     <span class="n">query_INPUT_MONTADORA_ID</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
     
     <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM montadoras WHERE MONTADORA_ID =&quot;&quot;&quot;</span><span class="o">+</span><span class="n">query_INPUT_MONTADORA_ID</span><span class="o">+</span> <span class="s2">&quot;;&quot;</span>
@@ -14355,18 +14422,47 @@ a.anchor-link {
     <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
     <span class="n">con_</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
     
+    <span class="c1">#   A seguir a utilização da biblioteca pandas, esta sendo usada para transformar dados do </span>
+    <span class="c1"># BD em um data frame, mais facil de ser manipulado nas condições a seguir. </span>
+    <span class="c1"># estas informações ficarão armazenadas na variavel df</span>
+    
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span> <span class="s2">&quot;&quot;&quot;select * from &quot;&quot;&quot;</span><span class="o">+</span> <span class="s1">&#39;veiculos&#39;</span> <span class="o">+</span><span class="s2">&quot;&quot;&quot;;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">con</span> <span class="o">=</span> <span class="n">con_</span><span class="p">)</span>
+    
+    <span class="c1">#   A funcao - loc[...] = var - seleciona uma parte da tabela, neste caso esta sendo </span>
+    <span class="c1"># utilizada para selecionar dentro das colunas os valores que contenham o ID que </span>
+    <span class="c1"># sera excluido e sobreescrevendo a tabela anterior na variavel df</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MONTADORA_ID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">query_INPUT_MONTADORA_ID</span><span class="p">)]</span>
+    
+    <span class="c1">#    Agora, com a nova lista carregada na variavel df, esta sendo selecionada apenas</span>
+    <span class="c1">#apenas a coluna que contem os IDs de veiclos que serã removidos </span>
     <span class="n">lista_ids_rmv</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;VEICULO_ID&quot;</span><span class="p">]</span>
+    
+    <span class="c1">#    A função list(...), esta transformando o conteundo da variavel lista_ids_rmv em </span>
+    <span class="c1"># uma lista.</span>
+    <span class="c1"># antes:         depois:        </span>
+    <span class="c1"># |200|</span>
+    <span class="c1"># |201| list()-&gt;[200,201,202] </span>
+    <span class="c1"># |202|</span>
     <span class="n">lista_ids_rmv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">lista_ids_rmv</span><span class="p">)</span>
     
+    <span class="c1">#   Sera feito uma query de DELETE nos veiculos respeitando a irdem que estao na lista </span>
+    <span class="c1"># uma por vez dentro do for</span>
+    
+    <span class="c1">#    A função range(...) responsavel por definir quando ciclos os for ira fazer, esta func</span>
+    <span class="c1"># pode receber uma constante ou uma variavel.</span>
+    
+    <span class="c1">#    A função len(...) é responsavel por contar quantas &quot;coisas&quot; existem dentro de algo,</span>
+    <span class="c1"># neste caso, quantos itens dentro da lista. </span>
+    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lista_ids_rmv</span><span class="p">)):</span>
+        
+        <span class="c1"># realiza uma &quot;query no bd, permitindo que seja incluso com as variaveis disponibilizadas pelo usuario&quot;</span>
         <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM veiculos WHERE VEICULO_ID = &quot;&quot;&quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lista_ids_rmv</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">+</span> <span class="s2">&quot;;&quot;</span>
 
-        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>       
         <span class="n">con_</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> 
         
-
+    <span class="c1"># cria janela de confirmação de ação no bd</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
 
     <span class="n">mensagem</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="n">end</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Montadora e veiculos excluidos com sucesso!!!&quot;</span><span class="p">)</span>
@@ -14383,16 +14479,59 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">Nao tenha duvidas sobre esta fun&#231;&#227;o!<a class="anchor-link" href="#Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">&#182;</a></h3><p>utilize o comando <code>print(rmv_todos_veiculos_montadora.__doc__)</code> durante a execução do codigo e veja o que esta função faz!</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">rmv_todos_veiculos_montadora</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Esta é a função responsavel por todos os veiculos associadoa a determinada montadora, a varivel de entrada query_INPUT_MONTADORA_ID é carregada a partir dos dados inseridos pelo usuario
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="confirma_rmv_veiculos()">confirma_rmv_veiculos()<a class="anchor-link" href="#confirma_rmv_veiculos()">&#182;</a></h1><p>Cria tela de confirmação de exclusao de montadora e exclusão de todos os veiculos associadoa a montadora</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">confirma_rmv_veiculos</span><span class="p">():</span>
+    
+    <span class="s2">&quot;Cria tela de confirmação de exclusao de montadora e exclusão de todos os veiculos associadoa a montadora&quot;</span>
     
     <span class="n">warning_rmv</span> <span class="o">=</span> <span class="n">Toplevel</span><span class="p">()</span>
 
@@ -14417,18 +14556,73 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">Nao tenha duvidas sobre esta fun&#231;&#227;o!<a class="anchor-link" href="#Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">&#182;</a></h3><p>utilize o comando <code>print(confirma_rmv_veiculos.__doc__)</code> durante a execução do codigo e veja o que esta função faz!</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">confirma_rmv_veiculos</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Cria tela de confirmação de exclusao de montadora e exclusão de todos os veiculos associadoa a montadora
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="rmv_montadora()">rmv_montadora()<a class="anchor-link" href="#rmv_montadora()">&#182;</a></h1><p>Esta é a função responsavel por remover uma montadora ao banco de dados e remover todos os veiculos que estravam associadoa a esta montadora</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">rmv_montadora</span><span class="p">():</span>
     
+    <span class="s2">&quot;Esta é a função responsavel por remover uma montadora ao banco de dados e remover todos os veiculos que estravam associadoa a esta montadora&quot;</span>
+    
+    <span class="c1">#obtem os valores inseridos pelo usuario na tela principal </span>
     <span class="n">query_INPUT_MONTADORA_ID</span> <span class="o">=</span> <span class="n">INPUT_MONTADORA_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    
+    <span class="c1"># invoca uma função de checahem de dados, e armazena seu retorno</span>
+    
+    <span class="c1">#    O intuito desta funcao e justamente verificar a ja existencia desta montadora </span>
+    <span class="c1"># seja pelo nome ou pelo ID, assim, como se deseja EXCLUIR uma montadora, a </span>
+    <span class="c1"># verificação retorna os seguintes valores:</span>
+    
+    <span class="c1"># - Se valor checado já existir, retorna 0</span>
+    <span class="c1"># - Se valor checado não existir, retorna 1</span>
+    
+    <span class="c1"># Ou seja, é nessesario que o valor inserido exista para que uma montadora seja excluida no banco de dados.</span>
     
     <span class="n">check1</span> <span class="o">=</span> <span class="n">verifica_id</span><span class="p">(</span><span class="n">query_INPUT_MONTADORA_ID</span><span class="p">,</span><span class="s1">&#39;MONTADORA_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;montadoras&#39;</span><span class="p">)</span>
     
@@ -14454,6 +14648,47 @@ a.anchor-link {
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">Nao tenha duvidas sobre esta fun&#231;&#227;o!<a class="anchor-link" href="#Nao-tenha-duvidas-sobre-esta-fun&#231;&#227;o!">&#182;</a></h3><p>utilize o comando <code>print(rmv_montadora.__doc__)</code> durante a execução do codigo e veja o que esta função faz!</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">rmv_montadora</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Esta é a função responsavel por remover uma montadora ao banco de dados e remover todos os veiculos que estravam associadoa a esta montadora
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="add_veiculo()">add_veiculo()<a class="anchor-link" href="#add_veiculo()">&#182;</a></h1><p>Esta é a função responsavel por adicionar um novo veiculo ao banco de dados.</p>
 
 </div>
@@ -14465,9 +14700,22 @@ a.anchor-link {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">add_veiculo</span><span class="p">():</span>
     
+    <span class="c1">#obtem os valores inseridos pelo usuario na tela principal </span>
     <span class="n">query_INPUT_VEICULO_ID</span> <span class="o">=</span> <span class="n">INPUT_VEICULO_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
     <span class="n">query_INPUT_VEICULO_NOME</span> <span class="o">=</span> <span class="n">INPUT_VEICULO_NOME</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
     <span class="n">query_INPUT_VEICULO_MONTADORA_ID</span> <span class="o">=</span> <span class="n">INPUT_VEICULO_MONTADORA_ID</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    
+    
+    <span class="c1"># Invoca três funções de checahem de dados, e armazena seu retorno</span>
+    
+    <span class="c1">#    O intuito desta funcao e justamente verificar a ja existencia deste veiculo </span>
+    <span class="c1"># seja pelo nome ou pelo ID, assim, como se deseja INCLUIR uma novo veiculo, a </span>
+    <span class="c1"># verificação retorna os seguintes valores:</span>
+    
+    <span class="c1"># - Se valor checado já existir, retorna 0</span>
+    <span class="c1"># - Se valor checado não existir, retorna 1</span>
+    
+    <span class="c1"># Ou seja, é nessesario que o valor inserido não exista para que uma novo veiculo seja inserida no banco de dados.</span>
     
     <span class="n">check1</span> <span class="o">=</span> <span class="n">verifica_id</span><span class="p">(</span><span class="n">query_INPUT_VEICULO_ID</span><span class="p">,</span><span class="s1">&#39;VEICULO_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;veiculos&#39;</span><span class="p">)</span>
 
@@ -14475,7 +14723,10 @@ a.anchor-link {
     
     <span class="n">check3</span> <span class="o">=</span> <span class="n">verifica_id</span><span class="p">(</span><span class="n">query_INPUT_VEICULO_MONTADORA_ID</span><span class="p">,</span><span class="s1">&#39;MONTADORA_ID&#39;</span><span class="p">,</span> <span class="s1">&#39;montadoras&#39;</span><span class="p">)</span>
     
+    
     <span class="k">if</span> <span class="p">(</span><span class="n">check1</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">check2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        
+        <span class="c1"># Verifica se montadora existe. Neste caso diferente das checagens acima, a montadora já DEVE existir </span>
         <span class="k">if</span> <span class="p">(</span><span class="n">check3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
             
             <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;insert into veiculos values(&quot;</span> <span class="o">+</span> <span class="n">query_INPUT_VEICULO_ID</span> <span class="o">+</span><span class="s2">&quot;&quot;&quot;,&#39;&quot;&quot;&quot;</span><span class="o">+</span><span class="n">query_INPUT_VEICULO_NOME</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;&#39;,&quot;&quot;&quot;</span><span class="o">+</span><span class="n">query_INPUT_VEICULO_MONTADORA_ID</span><span class="o">+</span><span class="s2">&quot;);&quot;</span>
